@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
-# Colonnes attendues (ordre Angular / CSV complet ; le modèle utilise `meta.feature_columns`)
+# Schéma API (Angular / CSV) ; le modèle n'utilise que meta.feature_columns (sans patient_id / intervention_type)
 FEATURE_NAMES: list[str] = [
     "age",
     "is_child",
@@ -118,7 +118,7 @@ def _load_bundle() -> dict[str, Any]:
 
 
 def _urgency_score(proba: np.ndarray, class_labels_for_columns: list[str]) -> float:
-    """proba[i] = classe i ; libellés Low/Medium/High pour le score."""
+    """proba[i] = classe i ; class_labels_for_columns[i] = Low / Medium / High (même ordre que predict_proba)."""
     weights = {"Low": 0.2, "Medium": 0.5, "High": 0.8}
     wvec = np.array([weights.get(str(c), 0.5) for c in class_labels_for_columns])
     if len(wvec) != len(proba):
@@ -143,6 +143,7 @@ def _hybrid_boost(row: dict[str, Any], label_pred: str, proba_high: float) -> tu
 
 
 def _model_classes_to_priority_strings(model: Any, le: Any) -> list[str]:
+    """Aligne model.classes_ sur des chaînes Low/Medium/High (même ordre que predict_proba)."""
     out: list[str] = []
     for c in np.asarray(model.classes_).ravel():
         if isinstance(c, (np.integer, int)):
@@ -153,6 +154,7 @@ def _model_classes_to_priority_strings(model: Any, le: Any) -> list[str]:
 
 
 def _prediction_to_label(pred: Any, le: Any) -> str:
+    """Accepte un index encodé ou un libellé déjà lisible selon le classifieur."""
     if isinstance(pred, (np.integer, int, np.floating)) or isinstance(pred, float):
         v = int(pred)
         return str(le.inverse_transform(np.array([v]))[0])
