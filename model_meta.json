@@ -1,0 +1,37 @@
+{
+  "primary": "surgiflow_priority_bundle.joblib",
+  "knn_neighbors": 11,
+  "feature_columns": [
+    "sex",
+    "blood_type",
+    "allergy_severity",
+    "admission_urgency",
+    "chief_complaint_category",
+    "anesthesia_risk",
+    "age",
+    "is_child",
+    "bmi",
+    "hypertension",
+    "diabetes",
+    "heart_disease",
+    "copd",
+    "renal_failure",
+    "anticoagulant",
+    "asa_score",
+    "pain_score",
+    "systolic_bp",
+    "diastolic_bp",
+    "heart_rate",
+    "temperature_c",
+    "spo2",
+    "gcs",
+    "estimated_duration_min",
+    "waiting_time_hours"
+  ],
+  "target_classes": [
+    "High",
+    "Low",
+    "Medium"
+  ],
+  "rows": 380
+}
