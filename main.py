@@ -225,6 +225,19 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root() -> dict[str, str]:
+    """La racine n’était pas définie — le navigateur affichait 404. Utiliser /health ou /docs."""
+    return {
+        "service": "SurgiFlow — priorité IA",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "health": "/health",
+        "features": "/features",
+        "predict": "POST /predict",
+    }
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     try:
